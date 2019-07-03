@@ -2,6 +2,24 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product')
 
+
+router.get('/:name', (req, res) => {
+  Product.findOne({
+    name: req.params.name
+  })
+    .then( (product) => {
+      if (product === null) {
+        throw new Error()
+      }
+      res.status(200).json(product)
+    })
+    .catch( (error) => {
+      res.status(404).json({
+        error: 'Product not found'
+      })
+    })
+})
+
 router.get('/', (req, res) => {
   Product.find()
     .then( (products) => {
@@ -12,8 +30,8 @@ router.get('/', (req, res) => {
         error: error
       })
     })
-
 })
+
 
 router.post('/', (req, res) => {
   const product = new Product({
@@ -29,12 +47,9 @@ router.post('/', (req, res) => {
   })
   .catch( (error) => {
     res.status(400).json({
-      error: error
+      error: error.message
     })
   });
-
-
-
 })
 
 module.exports = router;
