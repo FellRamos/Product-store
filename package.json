@@ -1,0 +1,21 @@
+{
+  "name": "product-store",
+  "version": "1.0.0",
+  "description": "product-store",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Feliciano",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.2"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0",
+    "morgan": "^1.9.1",
+    "supertest": "^4.0.2"
+  }
+}
