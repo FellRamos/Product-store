@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
 const Product = require('../models/Product');
 
 router.get('/:id', (req, res) => {
@@ -41,7 +42,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', auth, (req, res) => {
   Product.deleteOne({ _id: req.params.id })
     .then(() => {
       res.status(200).json({
@@ -55,7 +56,7 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-router.get('/', (req, res) => {
+router.get('/', auth, (req, res) => {
   Product.find()
     .then(products => {
       res.status(200).json(products);
@@ -67,11 +68,12 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   const product = new Product({
     name: req.body.name,
     quantity: req.body.quantity,
-    price: req.body.price
+    price: req.body.price,
+    token: req.token
   })
     .save()
     .then(() => {
