@@ -1,0 +1,329 @@
+openapi: '3.0.1'
+info:
+  version: 1.0.0
+  title: Product-store
+  description: A simple Product Store
+ 
+servers: 
+  - url: https://localhost:3000
+  
+paths:
+  /products:
+    get:
+      description: Obtains information about all products
+      responses:
+        200: 
+          description: returns all products available
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  _id: some_id_string
+                  name: pears
+                  quantity: 15
+                  price: 4
+  
+  /products/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: 
+          type: integer
+          example: 1234
+    get:
+      description: get a specific product
+      responses:
+        200:
+          description: Product retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  message: product retrieved successfully 
+        404:
+          description: Product was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Product not found
+  
+  /orders:
+    get:
+      description: Obtains information about all orders for that customer
+      responses:
+        200:
+          description: returns all orders for the customer
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  _id: some_id_string
+                  product: pears
+                  customer: john
+                  quantity: 15
+                  total_price: 4
+        401:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Not authorized
+    post:
+      description: Creates a new order for that customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer:
+                  type: string
+                  example: John
+                product:
+                  type: string
+                  example: apples
+                total_price:
+                  type: number
+                  example: 3.5
+                quantity:
+                  type: integer
+                  example: 5
+          
+      responses:
+        200:
+          description: order is posted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  message: Order created successfully
+        401:
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Not authorized
+    
+  /orders/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: 
+          type: integer
+          example: 1234
+    get:
+      description: get a specific order
+      responses:
+        200:
+          description: Order retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  _id: some_id_string
+                  product: pears
+                  customer: john
+                  quantity: 15
+                  total_price: 4
+        404:
+          description: order not found for that id
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Oder not found
+        
+        401:
+          description: not authorized          
+      
+    delete:
+      description: deletes an order
+      responses:
+        200:
+          description: Order deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Order deleted!
+        401:
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Not authorized
+        404:
+          description: order not found for that id
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Order not found
+          
+    put:
+      description: Updated an order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer:
+                  type: string
+                  example: John
+                product:
+                  type: string
+                  example: apples
+                total_price:
+                  type: number
+                  example: 3.5
+                quantity:
+                  type: integer
+                  example: 5
+      responses:
+        200: 
+          description: Updates an order successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Order updated successfully!
+        401:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Not authorized
+        404:
+          description: order not found for that id
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Order not found
+        
+  /customers/signup:
+    post:
+      description: signs up a new user in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John
+                surname:
+                  type: string
+                  example: Doe
+                contact:
+                  type: number
+                  example: 777999888
+                username:
+                  type: string
+                  example: john_doe
+                password:
+                  type: string
+                  example: pass1234
+  
+      responses:
+        201: 
+          description: Customer was added to the database
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  message: Customer added successfully
+        409:
+          description: Conflict - customer already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Customer already exists
+  
+  /customers/login:
+    post:
+      description: signs up a new user in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John
+                surname:
+                  type: string
+                  example: Doe
+                contact:
+                  type: number
+                  example: 777999888
+                username:
+                  type: string
+                  example: john_doe
+                password:
+                  type: string
+                  example: pass1234
+  
+      responses:
+        200: 
+          description: Customer successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  username: john
+                  token: big_token_here
+        401:
+          description: Incorrect credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Incorrect password
+        404:
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                type: object
+                example: 
+                  error: Customer not found
+  
+  
+  
+  
+  
+  
+  
+  
+    

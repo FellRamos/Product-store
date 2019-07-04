@@ -4,80 +4,6 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const Customer = require('../models/Customer');
 
-// router.get('/:id', (req, res) => {
-//   Customer.findOne({
-//     _id: req.params.id
-//   })
-//     .then(customer => {
-//       res.status(200).json(customer);
-//     })
-//     .catch(error => {
-//       res.status(404).json({
-//         error: 'Customer not found'
-//       });
-//     });
-// });
-
-// router.put('/:id', (req, res) => {
-//   const customer = new Customer({
-//     _id: req.params.id,
-//     name: req.body.name,
-//     surname: req.body.surname,
-//     contact: req.body.contact
-//   });
-//   Customer.updateOne(
-//     {
-//       _id: req.params.id
-//     },
-//     customer
-//   )
-//     .then(() => {
-//       res.status(200).json({
-//         message: 'Customer updated successfully'
-//       });
-//     })
-//     .catch(error => {
-//       res.status(400).json({
-//         error: error.message
-//       });
-//     });
-// });
-
-// router.delete('/:id', (req, res) => {
-//   Customer.deleteOne({
-//     _id: req.params.id
-//   })
-//     .then(() => {
-//       res.status(200).json({
-//         message: `Customer deleted`
-//       });
-//     })
-//     .catch(error => {
-//       res.status(404).json({
-//         error: 'Customer not found'
-//       });
-//     });
-// });
-
-// router.post('/', (req, res) => {
-//   const customer = new Customer({
-//     name: req.body.name,
-//     surname: req.body.surname,
-//     contact: req.body.contact
-//   })
-//     .save()
-//     .then(() => {
-//       res.status(201).json({
-//         message: 'New customer added!'
-//       });
-//     })
-//     .catch(error => {
-//       res.status(400).json({
-//         error: error.message
-//       });
-//     });
-// });
-
 router.get('/', (req, res) => {
   Customer.find()
     .then(customers => {
@@ -93,6 +19,7 @@ router.get('/', (req, res) => {
       });
     });
 });
+
 
 router.post('/signup', (req, res) => {
   Customer.findOne({
@@ -138,7 +65,7 @@ router.post('/login', (req, res) => {
   })
     .then(customer => {
       if (!customer) {
-        return res.status(401).json({
+        return res.status(404).json({
           error: 'Customer not found'
         });
       }
@@ -150,13 +77,9 @@ router.post('/login', (req, res) => {
               error: 'Incorrect password!'
             });
           }
-          const token = jwt.sign(
-            { customerId: customer._id },
-            'ultra_secret_token_secret',
-            { expiresIn: '24h' }
-          );
+          const token = jwt.sign({ username: customer.username }, 'token_secret',{ expiresIn: '24h' });
           res.status(200).json({
-            customerId: customer._id,
+            username: customer.username,
             token: token
           });
         })
@@ -172,5 +95,7 @@ router.post('/login', (req, res) => {
       });
     });
 });
+
+
 
 module.exports = router;
