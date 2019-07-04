@@ -103,26 +103,32 @@ router.post('/signup', (req, res) => {
         error: 'Customer already exists'
       });
     }
-    bcrypt.hash(req.body.password, 10).then(hash => {
-      const customer = new Customer({
-        username: req.body.username,
-        password: hash,
-        name: req.body.name,
-        surname: req.body.surname,
-        contact: req.body.contact
-      })
-        .save()
-        .then(() => {
-          res.status(201).json({
-            message: 'Customer added successfully'
-          });
+    try {
+      bcrypt.hash(req.body.password, 10, (error, hash) => {
+        const customer = new Customer({
+          username: req.body.username,
+          password: hash,
+          name: req.body.name,
+          surname: req.body.surname,
+          contact: req.body.contact
         })
-        .catch(error => {
-          res.status(500).json({
-            error: error.message
+          .save()
+          .then(() => {
+            res.status(201).json({
+              message: 'Customer added successfully'
+            });
+          })
+          .catch(error => {
+            res.status(500).json({
+              error: error.message
+            });
           });
-        });
-    });
+      });
+    } catch {
+      res.status(400).json({
+        error: error
+      });
+    }
   });
 });
 

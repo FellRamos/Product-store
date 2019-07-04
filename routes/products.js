@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const Product = require('../models/Product');
 
-router.get('/:id', (req, res) => {
+router.get('/:id', auth, (req, res) => {
   Product.findOne({
     _id: req.params.id
   })
@@ -17,12 +17,13 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', auth, (req, res) => {
   const product = new Product({
     _id: req.params.id,
     name: req.body.name,
     quantity: req.body.quantity,
-    price: req.body.price
+    price: req.body.price,
+    customerId: req.body.customerId
   });
   Product.updateOne(
     {
@@ -73,7 +74,7 @@ router.post('/', auth, (req, res) => {
     name: req.body.name,
     quantity: req.body.quantity,
     price: req.body.price,
-    token: req.token
+    customerId: req.body.customerId
   })
     .save()
     .then(() => {
