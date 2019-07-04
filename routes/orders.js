@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
 const Order = require('../models/Order');
 
-router.get('/:id', (req, res) => {
+
+router.get('/:id', auth, (req, res) => {
   Order.findOne({
-    _id: req.params.id
+    _id: req.params.id,
+    username: req.username
   })
     .then(order => {
       res.status(200).json(order);
@@ -16,17 +19,19 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', auth, (req, res) => {
   const order = new Order({
     _id: req.params.id,
     customer: req.body.customer,
     product: req.body.product,
     quantity: req.body.quantity,
-    total_price: req.body.total_price
+    total_price: req.body.total_price,
+    username: req.body.username
   });
   Order.updateOne(
     {
-      _id: req.params.id
+      _id: req.params.id,
+      username: req.username
     },
     order
   )
@@ -36,15 +41,16 @@ router.put('/:id', (req, res) => {
       });
     })
     .catch(error => {
-      res.status(400).json({
-        error: error.message
+      res.status(404).json({
+        error: "Order not found"
       });
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', auth, (req, res) => {
   Order.deleteOne({
-    _id: req.params.id
+    _id: req.params.id,
+    username: req.username
   })
     .then(() => {
       res.status(200).json({
@@ -52,14 +58,16 @@ router.delete('/:id', (req, res) => {
       });
     })
     .catch(error => {
-      res.status(400).json({
-        error: error.message
+      res.status(404).json({
+        error: "Order not found"
       });
     });
 });
 
-router.get('/', (req, res) => {
-  Order.find()
+router.get('/', auth, (req, res) => {
+  Order.find({
+    username: req.username
+  })
     .then(orders => {
       if (orders.length === 0) {
         res.status(200).json({ message: 'No orders found' });
@@ -74,12 +82,13 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   const order = new Order({
     customer: req.body.customer,
     product: req.body.product,
     quantity: req.body.quantity,
-    total_price: req.body.total_price
+    total_price: req.body.total_price,
+    username: req.body.username
   })
     .save()
     .then(() => {
