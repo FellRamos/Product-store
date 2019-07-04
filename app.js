@@ -12,34 +12,38 @@ const ordersRouter = require('./routes/orders');
 const app = express();
 
 // getting mongoose url:
-const mongoURL = require('./config/database').mongoURI
+const mongoURL = require('./config/database').mongoURI;
 
-mongoose.connect(mongoURL, {useNewUrlParser: true })
-  .then( () => {
-    console.log('Connected to MongoDB..')
+mongoose
+  .connect(mongoURL, { useNewUrlParser: true, useCreateIndex: true })
+  .then(() => {
+    console.log('Connected to MongoDB..');
   })
-  .catch( (error) => {
+  .catch(error => {
     console.log('Unable to connect to MondoDB!');
     console.error(error);
-  })
+  });
 
 app.use(morgan('short'));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+  );
   next();
 });
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}))
-
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/customers', customersRouter);
-app.use('/products', productsRouter)
-app.use('/orders', ordersRouter)
-
-
+app.use('/products', productsRouter);
+app.use('/orders', ordersRouter);
 
 module.exports = app;
