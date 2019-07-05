@@ -243,8 +243,8 @@ components:
       required:
         - customer
         - product
-        - total_price
         - quantity
+        - username
       properties:
         customer:
           type: string
@@ -258,6 +258,9 @@ components:
         quantity:
           type: integer
           example: 5
+        username:
+          type: string
+          example: john_doe
     PutOrder:
       description: Model for posting an Order
       type: object
@@ -265,8 +268,8 @@ components:
         - id
         - customer
         - product
-        - total_price
         - quantity
+        - username
       properties:
         id:
           type: string
@@ -283,6 +286,9 @@ components:
         quantity:
           type: integer
           example: 5
+        username:
+          type: string
+          example: john_doe
     GetOrders:
       description: Array of orders with order information
       type: array

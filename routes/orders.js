@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Order = require('../models/Order');
-
+const {
+  postProduct,
+  getProductFromDB,
+  updateProductsInDB
+} = require('../helpers/helpers');
+const Product = require('../models/Product');
 
 router.get('/:id', auth, (req, res) => {
   Order.findOne({
@@ -42,7 +47,7 @@ router.put('/:id', auth, (req, res) => {
     })
     .catch(error => {
       res.status(404).json({
-        error: "Order not found"
+        error: 'Order not found'
       });
     });
 });
@@ -59,7 +64,7 @@ router.delete('/:id', auth, (req, res) => {
     })
     .catch(error => {
       res.status(404).json({
-        error: "Order not found"
+        error: 'Order not found'
       });
     });
 });
@@ -83,24 +88,16 @@ router.get('/', auth, (req, res) => {
 });
 
 router.post('/', auth, (req, res) => {
-  const order = new Order({
-    customer: req.body.customer,
-    product: req.body.product,
-    quantity: req.body.quantity,
-    total_price: req.body.total_price,
-    username: req.body.username
-  })
-    .save()
-    .then(() => {
-      res.status(201).json({
-        message: 'Order created successfully'
-      });
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error.message
-      });
-    });
+  async function postNewOrder(req, res) {
+    const postOrder = await postProduct(req, res);
+
+    if (postOrder.statusCode < 400) {
+      const productID = await getProductFromDB(req);
+      await updateProductsInDB(req, res, productID);
+    }
+  }
+
+  postNewOrder(req, res);
 });
 
 module.exports = router;
