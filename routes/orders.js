@@ -4,7 +4,7 @@ const auth = require('../middleware/auth');
 const Order = require('../models/Order');
 const {
   postProduct,
-  getProductIdFromDB,
+  getProductFromDB,
   updateProductsInDB
 } = require('../helpers/helpers');
 const Product = require('../models/Product');
@@ -92,7 +92,7 @@ router.post('/', auth, (req, res) => {
     const postOrder = await postProduct(req, res);
 
     if (postOrder.statusCode < 400) {
-      const productID = await getProductIdFromDB(req);
+      const productID = await getProductFromDB(req);
       await updateProductsInDB(req, res, productID);
     }
   }

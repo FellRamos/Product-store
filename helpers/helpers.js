@@ -59,7 +59,7 @@ function postProduct(req, res) {
       }).save();
     })
     .then(() => {
-      res.status(201).json({
+      return res.status(201).json({
         message: 'Order created successfully'
       });
     })
@@ -70,7 +70,7 @@ function postProduct(req, res) {
     });
 }
 
-function getProductIdFromDB(req) {
+function getProductFromDB(req) {
   return Product.findOne({
     name: req.body.product
   })
@@ -92,7 +92,7 @@ function updateProductsInDB(req, res, productID) {
     quantity: newQuantity,
     price: productID.price
   });
-  console.log(product);
+
   Product.updateOne(
     {
       _id: productID._id
@@ -109,4 +109,4 @@ function updateProductsInDB(req, res, productID) {
     });
 }
 
-module.exports = { postProduct, getProductIdFromDB, updateProductsInDB };
+module.exports = { postProduct, getProductFromDB, updateProductsInDB };
