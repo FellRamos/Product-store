@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Order = require('../models/Order');
-const { checkProduct2 } = require('../helpers/helpers');
+const {
+  postProduct,
+  getProductIdFromDB,
+  updateProductsInDB
+} = require('../helpers/helpers');
 const Product = require('../models/Product');
 
 router.get('/:id', auth, (req, res) => {
@@ -84,39 +88,16 @@ router.get('/', auth, (req, res) => {
 });
 
 router.post('/', auth, (req, res) => {
-  Product.findOne({
-    name: req.body.product
-  })
-    .then(checkedProduct => {
-      if (!checkedProduct) {
-        throw new Error("We don't have this product");
-      } else if (checkedProduct.quantity < req.body.quantity) {
-        throw new Error(
-          "We don't have enough quantity. Quantity available: " +
-            checkedProduct.quantity
-        );
-      }
+  async function postNewOrder(req, res) {
+    const postOrder = await postProduct(req, res);
 
-      const total_price = req.body.quantity * checkedProduct.price;
+    if (postOrder.statusCode < 400) {
+      const productID = await getProductIdFromDB(req);
+      await updateProductsInDB(req, res, productID);
+    }
+  }
 
-      const order = new Order({
-        customer: req.body.customer,
-        product: req.body.product,
-        quantity: req.body.quantity,
-        total_price: total_price,
-        username: req.body.username
-      }).save();
-    })
-    .then(() => {
-      res.status(201).json({
-        message: 'Order created successfully'
-      });
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error.message
-      });
-    });
+  postNewOrder(req, res);
 });
 
 module.exports = router;
