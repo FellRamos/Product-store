@@ -3,35 +3,26 @@ info:
   version: 1.0.0
   title: Product-store
   description: A simple Product Store
- 
-servers: 
+
+servers:
   - url: https://localhost:3000
-  
+
 paths:
   /products:
     get:
       description: Obtains information about all products
       responses:
-        200: 
+        200:
           description: returns all products available
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  _id: some_id_string
-                  name: pears
-                  quantity: 15
-                  price: 4
-  
+                $ref: '#/components/schemas/GetProducts'
+
   /products/{id}:
     parameters:
-      - in: path
-        name: id
-        required: true
-        schema: 
-          type: integer
-          example: 1234
+      - $ref: '#/components/parameters/IDParameter'
+
     get:
       description: get a specific product
       responses:
@@ -40,118 +31,74 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example: 
-                  message: product retrieved successfully 
+                $ref: '#/components/schemas/GetProduct'
+
         404:
-          description: Product was not found
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Product not found
-  
+          $ref: '#/components/responses/404NotFound'
+
   /orders:
     get:
       description: Obtains information about all orders for that customer
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: returns all orders for the customer
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  _id: some_id_string
-                  product: pears
-                  customer: john
-                  quantity: 15
-                  total_price: 4
+                $ref: '#/components/schemas/GetOrders'
         401:
-          description: Not authorized
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Not authorized
+          $ref: '#/components/responses/UnauthorizedError'
+
     post:
       description: Creates a new order for that customer
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                customer:
-                  type: string
-                  example: John
-                product:
-                  type: string
-                  example: apples
-                total_price:
-                  type: number
-                  example: 3.5
-                quantity:
-                  type: integer
-                  example: 5
-          
+              $ref: '#/components/schemas/PostOrder'
+
       responses:
-        200:
+        201:
           description: order is posted successfully
           content:
             application/json:
               schema:
                 type: object
-                example: 
+                example:
                   message: Order created successfully
         401:
-          description: Not Authorized
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Not authorized
-    
+          $ref: '#/components/responses/UnauthorizedError'
+
   /orders/{id}:
     parameters:
-      - in: path
-        name: id
-        required: true
-        schema: 
-          type: integer
-          example: 1234
+      - $ref: '#/components/parameters/IDParameter'
+
     get:
       description: get a specific order
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: Order retrieved
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  _id: some_id_string
-                  product: pears
-                  customer: john
-                  quantity: 15
-                  total_price: 4
-        404:
-          description: order not found for that id
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Oder not found
-        
+                $ref: '#/components/schemas/GetOrder'
+
         401:
-          description: not authorized          
-      
+          $ref: '#/components/responses/UnauthorizedError'
+
+        404:
+          $ref: '#/components/responses/404NotFound'
+
     delete:
       description: deletes an order
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: Order deleted successfully
@@ -162,44 +109,23 @@ paths:
                 example:
                   message: Order deleted!
         401:
-          description: not authorized
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Not authorized
+          $ref: '#/components/responses/UnauthorizedError'
+
         404:
-          description: order not found for that id
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Order not found
-          
+          $ref: '#/components/responses/404NotFound'
+
     put:
       description: Updated an order
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                customer:
-                  type: string
-                  example: John
-                product:
-                  type: string
-                  example: apples
-                total_price:
-                  type: number
-                  example: 3.5
-                quantity:
-                  type: integer
-                  example: 5
+              $ref: '#/components/schemas/PutOrder'
+
       responses:
-        200: 
+        200:
           description: Updates an order successfully
           content:
             application/json:
@@ -208,22 +134,11 @@ paths:
                 example:
                   message: Order updated successfully!
         401:
-          description: Not authorized
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Not authorized
+          $ref: '#/components/responses/UnauthorizedError'
+
         404:
-          description: order not found for that id
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Order not found
-        
+          $ref: '#/components/responses/404NotFound'
+
   /customers/signup:
     post:
       description: signs up a new user in the database
@@ -231,32 +146,16 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: John
-                surname:
-                  type: string
-                  example: Doe
-                contact:
-                  type: number
-                  example: 777999888
-                username:
-                  type: string
-                  example: john_doe
-                password:
-                  type: string
-                  example: pass1234
-  
+              $ref: '#/components/schemas/SignupCustomer'
+
       responses:
-        201: 
+        201:
           description: Customer was added to the database
           content:
             application/json:
               schema:
                 type: object
-                example: 
+                example:
                   message: Customer added successfully
         409:
           description: Conflict - customer already exists
@@ -264,66 +163,206 @@ paths:
             application/json:
               schema:
                 type: object
-                example: 
+                example:
                   error: Customer already exists
-  
+
   /customers/login:
     post:
-      description: signs up a new user in the database
+      description: Login for the user if found in the database
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: John
-                surname:
-                  type: string
-                  example: Doe
-                contact:
-                  type: number
-                  example: 777999888
-                username:
-                  type: string
-                  example: john_doe
-                password:
-                  type: string
-                  example: pass1234
-  
+              $ref: '#/components/schemas/LoginCustomer'
+
       responses:
-        200: 
+        200:
           description: Customer successfully logged in
           content:
             application/json:
               schema:
                 type: object
-                example: 
+                example:
                   username: john
                   token: big_token_here
-        401:
-          description: Incorrect credentials
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Incorrect password
+        403:
+          $ref: '#/components/responses/IncorrectCredentials'
+
         404:
-          description: Customer not found
-          content:
-            application/json:
-              schema:
-                type: object
-                example: 
-                  error: Customer not found
-  
-  
-  
-  
-  
-  
-  
-  
-    
+          $ref: '#/components/responses/404NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginCustomer:
+      description: Model for signup and login of a Customer
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: john_doe
+        password:
+          type: string
+          example: pass1234
+    SignupCustomer:
+      description: Model for signup and login of a Customer
+      type: object
+      required:
+        - username
+        - password
+        - name
+        - surname
+        - contact
+      properties:
+        username:
+          type: string
+          example: john_doe
+        password:
+          type: string
+          example: pass1234
+        name:
+          type: string
+          example: John
+        surname:
+          type: string
+          example: Doe
+        contact:
+          type: number
+          example: 777999888
+    PostOrder:
+      description: Model for posting an Order
+      type: object
+      required:
+        - customer
+        - product
+        - total_price
+        - quantity
+      properties:
+        customer:
+          type: string
+          example: John
+        product:
+          type: string
+          example: apples
+        total_price:
+          type: number
+          example: 3.5
+        quantity:
+          type: integer
+          example: 5
+    PutOrder:
+      description: Model for posting an Order
+      type: object
+      required:
+        - id
+        - customer
+        - product
+        - total_price
+        - quantity
+      properties:
+        id:
+          type: string
+          example: 10
+        customer:
+          type: string
+          example: John
+        product:
+          type: string
+          example: apples
+        total_price:
+          type: number
+          example: 3.5
+        quantity:
+          type: integer
+          example: 5
+    GetOrders:
+      description: Array of orders with order information
+      type: array
+      items:
+        $ref: '#/components/schemas/GetOrder'
+    GetOrder:
+      description: Model containing information received for Order
+      type: object
+      properties:
+        _id:
+          type: integer
+          example: 423
+        product:
+          type: string
+          example: pears
+        customer:
+          type: string
+          example: john
+        username:
+          type: string
+          example: john_doe
+        quantity:
+          type: integer
+          example: 15
+        total_price:
+          type: number
+          example: 52
+    GetProducts:
+      description: Array of products with product information
+      type: array
+      items:
+        $ref: '#/components/schemas/GetProduct'
+    GetProduct:
+      description: Model containing information received for Product
+      type: object
+      properties:
+        _id:
+          type: integer
+          example: 11
+        name:
+          type: string
+          example: pears
+        quantity:
+          type: integer
+          example: 2
+        price:
+          type: number
+          example: 10
+
+  parameters:
+    IDParameter:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 12
+
+  responses:
+    404NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              error: Not found
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              error: Not authorized
+    IncorrectCredentials:
+      description: Incorrect credentials
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              error: Incorrect password
