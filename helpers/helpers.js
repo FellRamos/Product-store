@@ -55,7 +55,7 @@ function postProduct(req, res) {
         product: req.body.product,
         quantity: req.body.quantity,
         total_price: total_price,
-        username: req.body.username
+        username: req.username
       }).save();
     })
     .then(() => {
