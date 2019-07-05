@@ -4,6 +4,7 @@
   "description": "product-store",
   "main": "app.js",
   "scripts": {
+    "prestart": "npm install",
     "start": "node server",
     "dev": "nodemon server"
   },
@@ -16,7 +17,9 @@
     "express-openapi-validator": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.2",
-    "mongoose-unique-validator": "^2.0.3"
+    "mongoose-unique-validator": "^2.0.3",
+    "swagger-ui-express": "^4.0.7",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "jest": "^24.8.0",
