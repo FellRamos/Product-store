@@ -8,6 +8,6 @@ deploy:
   provider: heroku
   api_key:
     secure: TxjVAzAmW6dEmcL9P9+l7jO9E3PlJ/CDg3rSrmM6DBR5Jxmz8XOzklRGtEMVRHkz8bYgbxmdFvYM1pqW60h/g+kmjdviXD1GiBL3RKKSSdF4RRespesRRYwegFxQr+6nzxmPCxezdZZXcBq9WyiZlhtr+9sLW2M+az3KpMS0i75IKu5md20JYoAiHjrW1P7L6BJBN9YwWmpVgiVmhN/tMfJjbxhkYuh29Y+AGljDVJ83JXYzsG2hTYQpRoThmFi0OdqzZQzqvZVrnnP1hGWHnyRiX6x4QSgqLmGL/kCL9yH5GY3sRvsv2Jci0vlW6yaVEJT9LXa/UXApHd9JEpuLxwBYcWGuyIukxftJ1TstuSPlN/AjZxUdU98ijlHCxrQfZMPxMYryJD/71apia7t6fBwDShKZuQa9W6w9ZrVIgFvG69KnE71AChMjaRFOZP10HcI1E7bMDRAXnYob76MiiWr7yfd9Sx4jf9NFB689iKXwrM/YCWPtxGTHi6kDM8mbgpMHyhTr6TDs+kdLRbmoBusz7+E89fOJnrqKdR0FmSbdpeNlyoNVgZp15XhjxdpK2ESwxs/3FuMS6FJF8u/q/pCcHDevimJmV7O/6r2lAianX/2z3i7aLfceo9j+K9Sr1nFlt+h+E2hPI8OdqNnC1kIBtNy4YFOa84ZTnuhFZB8=
-  app: Product-store
+  app: fell-product-store
   on:
     repo: FellRamos/Product-store
