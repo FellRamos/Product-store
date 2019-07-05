@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Order = require('../models/Order');
-
+const { checkProduct2 } = require('../helpers/helpers');
 
 router.get('/:id', auth, (req, res) => {
   Order.findOne({
@@ -42,7 +42,7 @@ router.put('/:id', auth, (req, res) => {
     })
     .catch(error => {
       res.status(404).json({
-        error: "Order not found"
+        error: 'Order not found'
       });
     });
 });
@@ -59,7 +59,7 @@ router.delete('/:id', auth, (req, res) => {
     })
     .catch(error => {
       res.status(404).json({
-        error: "Order not found"
+        error: 'Order not found'
       });
     });
 });
@@ -83,24 +83,28 @@ router.get('/', auth, (req, res) => {
 });
 
 router.post('/', auth, (req, res) => {
-  const order = new Order({
-    customer: req.body.customer,
-    product: req.body.product,
-    quantity: req.body.quantity,
-    total_price: req.body.total_price,
-    username: req.body.username
-  })
-    .save()
-    .then(() => {
-      res.status(201).json({
-        message: 'Order created successfully'
-      });
+  checkProduct2(req).then(productChecked => {
+    total_price = productChecked;
+
+    const order = new Order({
+      customer: req.body.customer,
+      product: req.body.product,
+      quantity: req.body.quantity,
+      total_price: total_price,
+      username: req.body.username
     })
-    .catch(error => {
-      res.status(400).json({
-        error: error.message
+      .save()
+      .then(() => {
+        res.status(201).json({
+          message: 'Order created successfully'
+        });
+      })
+      .catch(error => {
+        res.status(400).json({
+          error: error.message
+        });
       });
-    });
+  });
 });
 
 module.exports = router;
