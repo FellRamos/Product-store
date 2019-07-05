@@ -243,7 +243,6 @@ components:
       required:
         - customer
         - product
-        - total_price
         - quantity
         - username
       properties:
@@ -269,7 +268,6 @@ components:
         - id
         - customer
         - product
-        - total_price
         - quantity
         - username
       properties:
