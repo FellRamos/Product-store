@@ -1,38 +1,7 @@
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 
-// function checkProduct(request) {
-//   return new Promise((resolve, reject) => {
-//     const quantityWanted = request.body.quantity;
-//     const productWanted = request.body.product;
-//     Product.findOne({
-//       name: productWanted
-//     })
-//       .then(product => {
-//         if (!product) {
-//           reject(
-//             new Error({
-//               message: "We don't have this product"
-//             })
-//           );
-//         } else if (product.quantity < quantityWanted) {
-//           reject(
-//             new Error(
-//               `We don't have this quantity available. Quantity available: ${
-//                 product.quantity
-//               }`
-//             )
-//           );
-//         } else {
-//           const total_price = product.price * quantityWanted;
-//           resolve(total_price);
-//         }
-//       })
-//       .catch(error => {
-//         error: error;
-//       });
-//   });
-// }
+
 
 function postProduct(req, res) {
   return Product.findOne({
