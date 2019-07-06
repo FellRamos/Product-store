@@ -1,25 +1,6 @@
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 
-function deleteOrderInDB(req, res) {
-  return Order.deleteOne({
-    _id: req.params.id,
-    username: req.username
-  })
-    .then(() => {
-      res.status(200).json({
-        message: `Order ${req.params.id} deleted!`
-      });
-    })
-    .catch(error => {
-      res.status(404).json({
-        error: 'Order not found'
-      });
-    });
-}
-
-// **********************************
-
 function getOrderFromDB(req) {
   return Order.findOne({
     _id: req.params.id
