@@ -17,7 +17,6 @@ router.get('/:id', (req, res) => {
     });
 });
 
-
 router.get('/', (req, res) => {
   Product.find()
     .then(products => {
@@ -30,5 +29,50 @@ router.get('/', (req, res) => {
     });
 });
 
+// Commented routes for testing
+
+// router.post('/', (req, res) => {
+//   const product = new Product({
+//     name: req.body.name,
+//     quantity: req.body.quantity,
+//     price: req.body.price
+//   })
+//     .save()
+//     .then(() => {
+//       res.status(201).json({
+//         message: 'New product added'
+//       });
+//     })
+//     .catch(error => {
+//       res.status(400).json({
+//         error: error.message
+//       });
+//     });
+// });
+
+// router.put('/:id', (req, res) => {
+//   const product = new Product({
+//     _id: req.params.id,
+//     name: req.body.name,
+//     quantity: req.body.quantity,
+//     price: req.body.price
+//   });
+//   Product.updateOne(
+//     {
+//       _id: req.params.id
+//     },
+//     product
+//   )
+//     .then(() => {
+//       res.status(201).json({
+//         message: 'Product updated'
+//       });
+//     })
+//     .catch(error => {
+//       res.status(400).json({
+//         error: error.message
+//       });
+//     });
+// });
 
 module.exports = router;
