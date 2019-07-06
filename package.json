@@ -2,7 +2,7 @@
   "name": "product-store",
   "version": "1.0.0",
   "description": "product-store",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "prestart": "npm install",
     "start": "node server",
