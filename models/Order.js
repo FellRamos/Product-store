@@ -13,6 +13,10 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  productID: {
+    type: String,
+    required: true
+  },
   quantity: {
     type: Number,
     required: true

@@ -1,81 +1,60 @@
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 
-
-
-function postProduct(req, res) {
-  return Product.findOne({
-    name: req.body.product
+function deleteOrderInDB(req, res) {
+  return Order.deleteOne({
+    _id: req.params.id,
+    username: req.username
   })
-    .then(checkedProduct => {
-      if (!checkedProduct) {
-        throw new Error("We don't have this product");
-      } else if (checkedProduct.quantity < req.body.quantity) {
-        throw new Error(
-          "We don't have enough quantity. Quantity available: " +
-            checkedProduct.quantity
-        );
-      }
-
-      const total_price = req.body.quantity * checkedProduct.price;
-
-      const order = new Order({
-        customer: req.body.customer,
-        product: req.body.product,
-        quantity: req.body.quantity,
-        total_price: total_price,
-        username: req.username
-      }).save();
-    })
     .then(() => {
-      return res.status(201).json({
-        message: 'Order created successfully'
+      res.status(200).json({
+        message: `Order ${req.params.id} deleted!`
       });
     })
     .catch(error => {
-      return res.status(400).json({
-        error: error.message
+      res.status(404).json({
+        error: 'Order not found'
       });
     });
+}
+
+// **********************************
+
+function getOrderFromDB(req) {
+  return Order.findOne({
+    _id: req.params.id
+  })
+    .then(product => product)
+    .catch(error => error);
 }
 
 function getProductFromDB(req) {
   return Product.findOne({
     name: req.body.product
   })
-    .then(product => {
-      return product;
-    })
-    .catch(error => {
-      res.status(500).json({
-        error: error
-      });
-    });
+    .then(product => product)
+    .catch(error => error);
 }
 
-function updateProductsInDB(req, res, productID) {
-  const newQuantity = productID.quantity - req.body.quantity;
+function updateProductInDB(productFound) {
   const product = new Product({
-    _id: productID._id,
-    name: productID.name,
-    quantity: newQuantity,
-    price: productID.price
+    _id: productFound._id,
+    name: productFound.name,
+    price: productFound.price,
+    quantity: productFound.quantity
   });
-
   Product.updateOne(
     {
-      _id: productID._id
+      _id: productFound._id
     },
     product
   )
     .then(() => {
-      res.status(200).json({
-        message: 'Order updated successfully'
-      });
+      console.log('Updated in Products DB');
     })
     .catch(error => {
-      error: 'Order not found';
+      console.log(error);
     });
 }
 
-module.exports = { postProduct, getProductFromDB, updateProductsInDB };
+module.exports = { getOrderFromDB, getProductFromDB, updateProductInDB };

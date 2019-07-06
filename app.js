@@ -27,7 +27,7 @@ mongoose
     console.error(error);
   });
 
-app.use(morgan('short'));
+app.use(morgan('combined'));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

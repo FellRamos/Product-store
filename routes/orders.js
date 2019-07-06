@@ -3,9 +3,9 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const Order = require('../models/Order');
 const {
-  postProduct,
+  getOrderFromDB,
   getProductFromDB,
-  updateProductsInDB
+  updateProductInDB
 } = require('../helpers/helpers');
 const Product = require('../models/Product');
 
@@ -53,20 +53,44 @@ router.put('/:id', auth, (req, res) => {
 });
 
 router.delete('/:id', auth, (req, res) => {
-  Order.deleteOne({
-    _id: req.params.id,
-    username: req.username
-  })
-    .then(() => {
-      res.status(200).json({
-        message: 'Order deleted!'
-      });
-    })
-    .catch(error => {
+  async function deleteOrder(req, res) {
+    // retrieve info about the order to delete
+    const orderInfo = await getOrderFromDB(req);
+
+    if (orderInfo === (undefined || null)) {
       res.status(404).json({
-        error: 'Order not found'
+        error: 'Order not found!'
       });
-    });
+    } else {
+      req.body.product = orderInfo.product;
+      // With the name of the product, we get the product info needed
+      const productInfo = await getProductFromDB(req);
+
+      if (productInfo === (undefined || null)) {
+        res.status(404).json({
+          error: 'Product not found!'
+        });
+      }
+
+      Order.deleteOne({
+        _id: req.params.id,
+        username: req.username
+      })
+        .then(() => {
+          res.status(200).json({
+            message: 'Order deleted!'
+          });
+          productInfo.quantity += orderInfo.quantity;
+          updateProductInDB(productInfo);
+        })
+        .catch(error => {
+          res.status(404).json({
+            error: error.message
+          });
+        });
+    }
+  }
+  deleteOrder(req, res);
 });
 
 router.get('/', auth, (req, res) => {
@@ -77,7 +101,10 @@ router.get('/', auth, (req, res) => {
       if (orders.length === 0) {
         res.status(200).json({ message: 'No orders found' });
       } else {
-        res.status(200).json(orders);
+        res.status(200).json({
+          message: `You have ${orders.length} order(s):`,
+          orders: orders
+        });
       }
     })
     .catch(error => {
@@ -88,15 +115,54 @@ router.get('/', auth, (req, res) => {
 });
 
 router.post('/', auth, (req, res) => {
+  if (req.body.quantity <= 0) {
+    res.status(400).json({
+      error: 'Please enter a positive number for quantity'
+    });
+  }
   async function postNewOrder(req, res) {
-    const postOrder = await postProduct(req, res);
+    const productInfo = await getProductFromDB(req);
 
-    if (postOrder.statusCode < 400) {
-      const productID = await getProductFromDB(req);
-      await updateProductsInDB(req, res, productID);
+    console.log(productInfo);
+
+    if (productInfo === (undefined || null)) {
+      res.status(404).json({
+        error: 'Product not found!'
+      });
+    } else if (productInfo.quantity < req.body.quantity) {
+      res.status(404).json({
+        error: `Unavailable quantity for this product. Quantity available: ${
+          productInfo.quantity
+        }`
+      });
+    } else {
+      const total_price = productInfo.price * req.body.quantity;
+      productInfo.quantity = productInfo.quantity - req.body.quantity;
+
+      const order = new Order({
+        customer: req.body.customer,
+        product: req.body.product,
+        productID: productInfo._id,
+        quantity: req.body.quantity,
+        total_price: total_price,
+        username: req.username
+      })
+        .save()
+        .then(() => {
+          res.send(
+            `New order created! ${req.body.quantity} ${
+              req.body.product
+            }: ${total_price}$`
+          );
+          updateProductInDB(productInfo);
+        })
+        .catch(error => {
+          res.status(400).json({
+            error: error.message
+          });
+        });
     }
   }
-
   postNewOrder(req, res);
 });
 
