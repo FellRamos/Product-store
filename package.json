@@ -6,7 +6,8 @@
   "scripts": {
     "prestart": "npm install",
     "start": "node server",
-    "dev": "nodemon server"
+    "dev": "nodemon server",
+    "test": "jest"
   },
   "author": "Feliciano",
   "license": "MIT",
@@ -23,7 +24,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "jest": "^24.8.0",
-    "supertest": "^4.0.2"
+    "@types/jest": "^24.0.15",
+    "jest": "^24.8.0"
   }
 }
