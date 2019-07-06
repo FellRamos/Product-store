@@ -26,3 +26,9 @@ The resource's operations were created from a consumer perspective. That means t
 ## Running on Local
 
 Just download or clone the repo and execute **npm start**. It will run npm install due to the prestart script in package.json.
+
+## Additional resources
+
+Here you can find a Postman link to test all the routes, can be useful:
+
+[Postman examples](https://documenter.getpostman.com/view/6023514/SVSDQX3N)
