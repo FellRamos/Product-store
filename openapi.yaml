@@ -139,6 +139,17 @@ paths:
         404:
           $ref: '#/components/responses/404NotFound'
 
+  /customers:
+    get:
+      description: Returns a list with all customers in the DB
+      responses:
+        200:
+          description: returns all orders for the customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrders'
+
   /customers/signup:
     post:
       description: signs up a new user in the database
@@ -199,6 +210,22 @@ components:
       bearerFormat: JWT
 
   schemas:
+    GetCustomers:
+      description: Array of customers with some information
+      type: array
+      items:
+        description: Model about each customer
+        type: object
+        properties:
+        name:
+          type: string
+          example: John
+        surname:
+          type: string
+          example: Doe
+        contact:
+          type: number
+          example: 12345
     LoginCustomer:
       description: Model for signup and login of a Customer
       type: object

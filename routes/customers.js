@@ -10,7 +10,16 @@ router.get('/', (req, res) => {
       if (customers.length === 0) {
         res.status(200).json({ message: 'There are no customers' });
       } else {
-        res.status(200).json(customers);
+        const customersInfo = [];
+        customers.forEach(customer => {
+          customersInfo.push({
+            name: customer.name,
+            surname: customer.surname,
+            contact: customer.contact
+          });
+        });
+
+        res.status(200).json(customersInfo);
       }
     })
     .catch(error => {
@@ -19,7 +28,6 @@ router.get('/', (req, res) => {
       });
     });
 });
-
 
 router.post('/signup', (req, res) => {
   Customer.findOne({
@@ -77,7 +85,11 @@ router.post('/login', (req, res) => {
               error: 'Incorrect password!'
             });
           }
-          const token = jwt.sign({ username: customer.username }, 'token_secret',{ expiresIn: '24h' });
+          const token = jwt.sign(
+            { username: customer.username },
+            'token_secret',
+            { expiresIn: '24h' }
+          );
           res.status(200).json({
             username: customer.username,
             token: token
@@ -95,7 +107,5 @@ router.post('/login', (req, res) => {
       });
     });
 });
-
-
 
 module.exports = router;
