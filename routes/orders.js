@@ -25,31 +25,62 @@ router.get('/:id', auth, (req, res) => {
 });
 
 router.put('/:id', auth, (req, res) => {
-  const order = new Order({
-    _id: req.params.id,
-    customer: req.body.customer,
-    product: req.body.product,
-    quantity: req.body.quantity,
-    total_price: req.body.total_price,
-    username: req.body.username
-  });
-  Order.updateOne(
-    {
-      _id: req.params.id,
-      username: req.username
-    },
-    order
-  )
-    .then(() => {
-      res.status(200).json({
-        message: 'Order updated successfully'
-      });
-    })
-    .catch(error => {
-      res.status(404).json({
-        error: 'Order not found'
-      });
+  if (req.body.quantity <= 0) {
+    res.status(400).json({
+      error: 'Please enter a positive number for quantity'
     });
+  }
+  async function updateOrder(req, res) {
+    const orderInfo = await getOrderFromDB(req);
+    const productInfo = await getProductFromDB(req);
+
+    if (orderInfo === (undefined || null)) {
+      res.status(404).json({
+        error: 'Order not found!'
+      });
+    } else if (productInfo === (undefined || null)) {
+      res.status(404).json({
+        error: 'Product not found!'
+      });
+    } else if (orderInfo.quantity + productInfo.quantity < req.body.quantity) {
+      res.status(404).json({
+        error: `Unavailable quantity for this product. Quantity available: ${productInfo.quantity +
+          orderInfo.quantity}`
+      });
+    } else {
+      const total_price = productInfo.price * req.body.quantity;
+      productInfo.quantity =
+        productInfo.quantity + orderInfo.quantity - req.body.quantity;
+
+      const order = new Order({
+        _id: req.params.id,
+        customer: req.body.customer,
+        product: req.body.product,
+        quantity: req.body.quantity,
+        total_price: total_price,
+        username: req.username
+      });
+      Order.updateOne(
+        {
+          _id: req.params.id,
+          username: req.username
+        },
+        order
+      )
+        .then(() => {
+          res.status(200).json({
+            message: 'Order updated successfully'
+          });
+          updateProductInDB(productInfo);
+        })
+        .catch(error => {
+          res.status(404).json({
+            error: 'Order not found'
+          });
+        });
+    }
+  }
+  updateOrder(req, res);
 });
 
 router.delete('/:id', auth, (req, res) => {
