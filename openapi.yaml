@@ -115,7 +115,7 @@ paths:
           $ref: '#/components/responses/404NotFound'
 
     put:
-      description: Updated an order
+      description: Updates an order
       security:
         - bearerAuth: []
       requestBody:
@@ -244,7 +244,6 @@ components:
         - customer
         - product
         - quantity
-        - username
       properties:
         customer:
           type: string
@@ -252,43 +251,25 @@ components:
         product:
           type: string
           example: apples
-        total_price:
-          type: number
-          example: 3.5
         quantity:
           type: integer
           example: 5
-        username:
-          type: string
-          example: john_doe
     PutOrder:
-      description: Model for posting an Order
+      description: Model for updating an Order
       type: object
       required:
-        - id
-        - customer
         - product
         - quantity
-        - username
       properties:
-        id:
-          type: string
-          example: 10
         customer:
           type: string
           example: John
         product:
           type: string
           example: apples
-        total_price:
-          type: number
-          example: 3.5
         quantity:
           type: integer
           example: 5
-        username:
-          type: string
-          example: john_doe
     GetOrders:
       description: Array of orders with order information
       type: array
